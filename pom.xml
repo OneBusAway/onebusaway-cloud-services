@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.onebusaway</groupId>
+    <artifactId>onebusaway-cloud-services</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>onebusaway-cloud-services</name>
+    <description>Parent bundle of cloud services API and implementations</description>
+    <url>http://code.google.com/p/onebusaway/wiki/TODO</url>
+
+    <parent>
+        <groupId>org.onebusaway</groupId>
+        <artifactId>onebusaway</artifactId>
+        <version>1.0.7</version>
+        <relativePath>../onebusaway</relativePath>
+    </parent>
+
+    <repositories>
+        <repository>
+            <id>releases.developer.onebusaway.org</id>
+            <url>http://developer.onebusaway.org/maven/repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>snapshots.developer.onebusaway.org</id>
+            <url>http://developer.onebusaway.org/maven/snapshot-repository/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <scm>
+      <connection>scm:git:git@github.com:onebusawway/onebusaway-cloud-services.git</connection>
+      <developerConnection>scm:git:git@github.com:onebusaway/onebusaway-cloud-services.git</developerConnection>
+      <url>scm:git:git@github.com:onebusaway/onebusaway-cloud-services</url>
+    </scm>
+
+    <modules>
+        <module>onebusaway-cloud-api</module>
+        <module>onebusaway-cloud-noop</module>
+        <module>onebusaway-cloud-aws</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

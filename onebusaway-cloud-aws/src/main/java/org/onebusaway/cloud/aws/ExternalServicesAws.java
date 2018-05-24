@@ -20,15 +20,16 @@ import org.onebusaway.cloud.api.ExternalServices;
 
 public class ExternalServicesAws implements ExternalServices {
     private SNSServices _sns = new SNSServices();
+    private CloudWatchServices _cloudwatch = new CloudWatchServices();
 
     @Override
-    public ExternalResult pubishMessage(String topic, String messageConents) {
+    public ExternalResult publishMessage(String topic, String messageConents) {
         boolean result = _sns.publish(topic, messageConents);
         return new AwsExternalResult(result);
     }
 
     @Override
-    public ExternalResult publishMetric(String metricName, String dimension, Number value) {
-        return null;
+    public ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensonValue, double value) {
+        return _cloudwatch.publishMetric(namespace, metricName, dimensionName, dimensonValue, value);
     }
 }

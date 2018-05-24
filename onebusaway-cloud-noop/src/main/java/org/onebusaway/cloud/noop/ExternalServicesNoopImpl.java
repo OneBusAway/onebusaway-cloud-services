@@ -24,14 +24,15 @@ public class ExternalServicesNoopImpl implements ExternalServices {
     private final Logger _log = LoggerFactory.getLogger(ExternalServicesNoopImpl.class);
 
     @Override
-    public ExternalResult pubishMessage(String topic, String messageContents) {
+    public ExternalResult publishMessage(String topic, String messageContents) {
         _log.info("publishMessage({" + topic + "}, {" + messageContents + "})");
         return new AlwaysTrueExternalResult();
     }
 
     @Override
-    public ExternalResult publishMetric(String metricName, String dimension, Number value) {
-        _log.info("publishMetric({" + metricName + "}, {" + dimension +"}, {" + value + "})");
+    public ExternalResult publishMetric(String topic, String metricName, String dimensionName, String dimensionValue, double value) {
+        _log.info("publishMetric({" + topic + ":" + metricName + "}, {"
+                + dimensionName + "=" + dimensionValue +"}, {" + value + "})");
         return new AlwaysTrueExternalResult();
     }
 }

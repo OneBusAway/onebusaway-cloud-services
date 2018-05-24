@@ -21,7 +21,7 @@ package org.onebusaway.cloud.api;
  * as to not integrate with cloud services.
  */
 public interface ExternalServices {
-    ExternalResult pubishMessage(String topic, String messageConents);
-    ExternalResult publishMetric(String metricName, String dimension, Number value);
+    ExternalResult publishMessage(String topic, String messageConents);
+    ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value);
 
 }

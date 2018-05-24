@@ -12,11 +12,14 @@
     <parent>
         <groupId>org.onebusaway</groupId>
         <artifactId>onebusaway</artifactId>
-        <version>1.0.7</version>
-        <relativePath>../onebusaway</relativePath>
+        <version>1.2.2</version>
     </parent>
 
     <repositories>
+        <repository>
+            <id>public.onebusaway.org</id>
+            <url>http://nexus.onebusaway.org/content/groups/public/</url>
+        </repository>
         <repository>
             <id>releases.developer.onebusaway.org</id>
             <url>http://developer.onebusaway.org/maven/repository/</url>

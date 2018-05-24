@@ -16,19 +16,37 @@
 package org.onebusaway.cloud.aws;
 
 import org.onebusaway.cloud.api.ExternalResult;
-import org.onebusaway.cloud.api.ExternalServices;
 
-public class ExternalServicesAws implements ExternalServices {
-    private SNSServices _sns = new SNSServices();
+/**
+ * An AWS specific result.
+ */
+public class AwsExternalResult implements ExternalResult {
+    private boolean _success = false;
+    private String _errorMessage = null;
+    private String _responseMessage = null;
 
-    @Override
-    public ExternalResult pubishMessage(String topic, String messageConents) {
-        boolean result = _sns.publish(topic, messageConents);
-        return new AwsExternalResult(result);
+    public AwsExternalResult(boolean success) {
+        _success = success;
+    }
+
+    public AwsExternalResult(boolean success, String errorMessage, String responseMessage) {
+        _success = success;
+        _errorMessage = errorMessage;
+        _responseMessage = responseMessage;
     }
 
     @Override
-    public ExternalResult publishMetric(String metricName, String dimension, Number value) {
-        return null;
+    public boolean getSuccess() {
+        return _success;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return _errorMessage;
+    }
+
+    @Override
+    public String getResponseMessage() {
+        return _responseMessage;
     }
 }

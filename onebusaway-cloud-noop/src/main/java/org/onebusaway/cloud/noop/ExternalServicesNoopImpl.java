@@ -17,16 +17,21 @@ package org.onebusaway.cloud.noop;
 
 import org.onebusaway.cloud.api.ExternalResult;
 import org.onebusaway.cloud.api.ExternalServices;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExternalServicesNoopImpl implements ExternalServices {
+    private final Logger _log = LoggerFactory.getLogger(ExternalServicesNoopImpl.class);
 
     @Override
-    public ExternalResult pubishMessage(String topic, String messageConents) {
+    public ExternalResult pubishMessage(String topic, String messageContents) {
+        _log.info("publishMessage({" + topic + "}, {" + messageContents + "})");
         return new AlwaysTrueExternalResult();
     }
 
     @Override
     public ExternalResult publishMetric(String metricName, String dimension, Number value) {
+        _log.info("publishMetric({" + metricName + "}, {" + dimension +"}, {" + value + "})");
         return new AlwaysTrueExternalResult();
     }
 }

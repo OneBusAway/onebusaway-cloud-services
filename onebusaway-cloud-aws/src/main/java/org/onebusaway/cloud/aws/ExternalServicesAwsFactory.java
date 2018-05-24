@@ -15,20 +15,13 @@
  */
 package org.onebusaway.cloud.aws;
 
-import org.onebusaway.cloud.api.ExternalResult;
 import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.ExternalServicesFactory;
 
-public class ExternalServicesAws implements ExternalServices {
-    private SNSServices _sns = new SNSServices();
-
-    @Override
-    public ExternalResult pubishMessage(String topic, String messageConents) {
-        boolean result = _sns.publish(topic, messageConents);
-        return new AwsExternalResult(result);
-    }
+public class ExternalServicesAwsFactory implements ExternalServicesFactory {
 
     @Override
-    public ExternalResult publishMetric(String metricName, String dimension, Number value) {
-        return null;
+    public ExternalServices getExternalServices() {
+        return new ExternalServicesAws();
     }
 }

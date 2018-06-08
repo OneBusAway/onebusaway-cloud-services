@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.onebusaway</groupId>
         <artifactId>onebusaway-cloud-services</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <properties>
         <aws.version>1.11.333</aws.version>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.onebusaway</groupId>
             <artifactId>onebusaway-cloud-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>

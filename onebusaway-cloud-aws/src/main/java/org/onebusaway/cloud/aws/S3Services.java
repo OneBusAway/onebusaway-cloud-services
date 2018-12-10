@@ -36,18 +36,28 @@ public class S3Services {
     private final Logger _log = LoggerFactory.getLogger(S3Services.class);
 
     // this expects config files present in ~/.aws
-    final AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+    AmazonS3 s3;
 
-    final TransferManager tm = TransferManagerBuilder.defaultTransferManager();
+    TransferManager tm;
 
     private AmazonS3 getS3Provider(CredentialContainer cc) {
         String profile = cc.getProfile();
         if (profile == null || "default".equalsIgnoreCase(profile)) {
+            if (s3 == null) {
+                s3 = AmazonS3ClientBuilder.defaultClient();
+            }
             return s3;
         }
         AmazonS3 provider = AmazonS3ClientBuilder.standard()
                 .withCredentials(new ProfileCredentialsProvider(profile)).build();
         return provider;
+    }
+
+    private TransferManager getTransferManager() {
+        if (tm == null) {
+            tm = TransferManagerBuilder.defaultTransferManager();
+        }
+        return tm;
     }
 
     // input stream will need be closed
@@ -86,7 +96,7 @@ public class S3Services {
     public boolean put(String url, String fileName) {
         _log.info("uploading {} to {}", fileName, url);
         AmazonS3URI uri = new AmazonS3URI(url);
-        s3.putObject(uri.getBucket(), uri.getKey(), new File(fileName));
+        getS3Provider(null).putObject(uri.getBucket(), uri.getKey(), new File(fileName));
         return true;
     }
 
@@ -94,7 +104,7 @@ public class S3Services {
         _log.info("uploading (recursively) {} to {}", directoryName, url);
         try {
             AmazonS3URI uri = new AmazonS3URI(url);
-            MultipleFileUpload upload = tm.uploadDirectory(uri.getBucket(), uri.getKey(), new File(directoryName), true);
+            MultipleFileUpload upload = getTransferManager().uploadDirectory(uri.getBucket(), uri.getKey(), new File(directoryName), true);
             upload.waitForCompletion();
             _log.info("upload complete!");
         } catch (Exception any) {

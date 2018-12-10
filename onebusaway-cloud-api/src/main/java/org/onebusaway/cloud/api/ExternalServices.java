@@ -22,6 +22,25 @@ package org.onebusaway.cloud.api;
  */
 public interface ExternalServices {
     ExternalResult publishMessage(String topic, String messageConents);
+
     ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value);
 
+    /**
+     * Read a file from S3 to an InputStream
+     *
+     * @param url URL to read the file from
+     * @param callback Do something with the InputStream
+     * @param profile profile to use with S3 (default to "default")
+     * @return result
+     */
+    ExternalResult getFileAsStream(String url, InputStreamConsumer callback, String profile);
+
+    /**
+     * Read a file from S3 to an InputStream, using the default S3 profile
+     *
+     * @param url URL to read the file from
+     * @param callback Do something with the InputStream
+     * @return result
+     */
+    ExternalResult getFileAsStream(String url, InputStreamConsumer callback);
 }

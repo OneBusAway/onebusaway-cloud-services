@@ -17,10 +17,20 @@ package org.onebusaway.cloud.aws;
 
 import org.onebusaway.cloud.api.ExternalResult;
 import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.InputStreamConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ExternalServicesAws implements ExternalServices {
+
+    private Logger _log = LoggerFactory.getLogger(ExternalServicesAws.class);
+
     private SNSServices _sns = new SNSServices();
     private CloudWatchServices _cloudwatch = new CloudWatchServices();
+    private S3Services _s3 = new S3Services();
 
     @Override
     public ExternalResult publishMessage(String topic, String messageConents) {
@@ -31,5 +41,28 @@ public class ExternalServicesAws implements ExternalServices {
     @Override
     public ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensonValue, double value) {
         return _cloudwatch.publishMetric(namespace, metricName, dimensionName, dimensonValue, value);
+    }
+
+    @Override
+    public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer) {
+        return getFileAsStream(url, consumer, null);
+    }
+
+    @Override
+    public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer, String profile) {
+        CredentialContainer credentials;
+        if (profile == null || "default".equals(profile)) {
+            credentials = CredentialContainer.getDefault();
+        } else {
+            credentials = new CredentialContainer(profile);
+        }
+        try (InputStream inputStream = _s3.fetch(url, credentials)) {
+            consumer.accept(inputStream);
+            return new AwsExternalResult(true);
+        } catch (IOException ex) {
+            _log.error("Error reading from S3: {}", ex);
+            ex.printStackTrace();
+            return new AwsExternalResult(false, ex.toString(), null);
+        }
     }
 }

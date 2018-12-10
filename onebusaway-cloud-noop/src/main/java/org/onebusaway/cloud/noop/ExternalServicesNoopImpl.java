@@ -35,4 +35,10 @@ public class ExternalServicesNoopImpl implements ExternalServices {
                 + dimensionName + "=" + dimensionValue +"}, {" + value + "})");
         return new AlwaysTrueExternalResult();
     }
+
+    @Override
+    public ExternalResult getFileAsStream(String profile, String url) {
+        _log.info("getFileAsStream({" + profile + "}, " + url + " }");
+        return new AlwaysTrueExternalResult();
+    }
 }

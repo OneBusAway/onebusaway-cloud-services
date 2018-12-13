@@ -17,6 +17,7 @@ package org.onebusaway.cloud.noop;
 
 import org.onebusaway.cloud.api.ExternalResult;
 import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.InputStreamConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +38,14 @@ public class ExternalServicesNoopImpl implements ExternalServices {
     }
 
     @Override
-    public ExternalResult getFileAsStream(String profile, String url) {
-        _log.info("getFileAsStream({" + profile + "}, " + url + " }");
+    public ExternalResult getFileAsStream(String url, InputStreamConsumer callback, String profile) {
+        _log.info("getFileAsStream({" + url + "}, " + profile + " }");
+        return new AlwaysTrueExternalResult();
+    }
+
+    @Override
+    public ExternalResult getFileAsStream(String url, InputStreamConsumer callback) {
+        _log.info("getFileAsStream({" + url + " }");
         return new AlwaysTrueExternalResult();
     }
 }

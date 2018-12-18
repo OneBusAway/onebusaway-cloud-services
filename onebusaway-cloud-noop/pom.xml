@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.onebusaway</groupId>
             <artifactId>onebusaway-cloud-api</artifactId>
-            <version/>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

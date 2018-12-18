@@ -11,14 +11,14 @@
     <parent>
         <groupId>org.onebusaway</groupId>
         <artifactId>onebusaway-cloud-services</artifactId>
-        <version>${project.version}</version>
+        <version/>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>org.onebusaway</groupId>
             <artifactId>onebusaway-cloud-api</artifactId>
-            <version>${project.version}</version>
+            <version/>
         </dependency>
 
         <dependency>

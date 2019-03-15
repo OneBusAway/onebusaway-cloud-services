@@ -48,4 +48,9 @@ public class ExternalServicesNoopImpl implements ExternalServices {
         _log.info("getFileAsStream({" + url + " }");
         return new AlwaysTrueExternalResult();
     }
+
+    @Override
+    public boolean isInstancePrimary() {
+        return true;
+    }
 }

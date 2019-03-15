@@ -31,6 +31,7 @@ public class ExternalServicesAws implements ExternalServices {
     private SNSServices _sns = new SNSServices();
     private CloudWatchServices _cloudwatch = new CloudWatchServices();
     private S3Services _s3 = new S3Services();
+    private AwsLeadershipElectionService _election = new AwsLeadershipElectionService();
 
     @Override
     public ExternalResult publishMessage(String topic, String messageConents) {
@@ -64,5 +65,10 @@ public class ExternalServicesAws implements ExternalServices {
             ex.printStackTrace();
             return new AwsExternalResult(false, ex.toString(), null);
         }
+    }
+
+    @Override
+    public boolean isInstancePrimary() {
+        return _election.isInstancePrimary();
     }
 }

@@ -48,7 +48,7 @@ public class AwsLeadershipElectionService {
     private ScheduledExecutorService _scheduledExecutorService;
 
     public boolean isInstancePrimary() {
-        String autoScalingGroupName = System.getProperty("aws.autoScaleGroup");
+        String autoScalingGroupName = System.getProperty("aws.autoScalingGroup");
         if (autoScalingGroupName == null) {
             return true;
         }

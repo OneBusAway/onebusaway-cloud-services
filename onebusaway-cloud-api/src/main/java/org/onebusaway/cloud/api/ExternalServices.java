@@ -43,4 +43,12 @@ public interface ExternalServices {
      * @return result
      */
     ExternalResult getFileAsStream(String url, InputStreamConsumer callback);
+
+    /**
+     * Allow services to determine if they are the primary instance for leadership-election purposes
+     * (e.g. if multiple servers in a group are logging metrics.)
+     *
+     * @return true if this is the primary instance, false otherwise
+     */
+    boolean isInstancePrimary();
 }

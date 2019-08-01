@@ -87,18 +87,17 @@ public class AwsLeadershipElectionService {
         }
 
         public void run() {
-            _log.info("LeadershipElectionTask (primary) running....");
             AutoScalingGroup autoScalingGroup = getAutoScalingGroups();
 
             if(autoScalingGroup != null) {
                 try {
                     String oldestInstance = null;
                     Date oldestInstanceLaunchTime = new Date();
-                    _log.info("getting instanceIds..");
+
                     List<String> instanceIds = autoScalingGroup.getInstances().stream()
                             .map(com.amazonaws.services.autoscaling.model.Instance::getInstanceId)
                             .collect(Collectors.toList());
-                    _log.info("instanceIds = " + instanceIds);
+
                     List<Instance> instances = getInstances(instanceIds);
 
                     for (Instance instance : instances) {
@@ -122,7 +121,6 @@ public class AwsLeadershipElectionService {
                 _log.warn("Not the primary instance, no autoScaling group found.");
                 _primary = false;
             }
-            _log.info("primary check complete, _primary=" + _primary);
         }
 
         private AutoScalingGroup getAutoScalingGroups(){

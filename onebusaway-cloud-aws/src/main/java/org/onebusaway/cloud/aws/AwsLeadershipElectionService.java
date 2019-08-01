@@ -65,7 +65,7 @@ public class AwsLeadershipElectionService {
                         1, 1, TimeUnit.MINUTES);
                 // and run now, synchronously:
                 new LeadershipElectionTask(autoScalingGroupName).run();
-            } catch (Exception any) {
+            } catch (Throwable any) {
                 _log.error("exception scheduling primary check: " + any, any);
             }
         }
@@ -81,7 +81,7 @@ public class AwsLeadershipElectionService {
                 _ec2 = AmazonEC2ClientBuilder.standard().build();
                 _autoScale = AmazonAutoScalingClientBuilder.standard().build();;
                 _autoScalingGroupName = autoScalingGroupName;
-            } catch(Exception e){
+            } catch(Throwable e){
                 _log.warn("Unable to create AWS Clients", e);
             }
         }
@@ -94,11 +94,11 @@ public class AwsLeadershipElectionService {
                 try {
                     String oldestInstance = null;
                     Date oldestInstanceLaunchTime = new Date();
-
+                    _log.info("getting instanceIds..");
                     List<String> instanceIds = autoScalingGroup.getInstances().stream()
                             .map(com.amazonaws.services.autoscaling.model.Instance::getInstanceId)
                             .collect(Collectors.toList());
-
+                    _log.info("instanceIds = " + instanceIds);
                     List<Instance> instances = getInstances(instanceIds);
 
                     for (Instance instance : instances) {
@@ -115,13 +115,14 @@ public class AwsLeadershipElectionService {
                         _log.warn("This is not the primary instance. Oldest Instance Id is {}, this Instance Id is {}", oldestInstance, EC2MetadataUtils.getInstanceId());
                         _primary = false;
                     }
-                } catch (Exception any) {
+                } catch (Throwable any) {
                     _log.error("exception with primary check:" + any, any);
                 }
             } else {
                 _log.warn("Not the primary instance, no autoScaling group found.");
                 _primary = false;
             }
+            _log.info("primary check complete, _primary=" + _primary);
         }
 
         private AutoScalingGroup getAutoScalingGroups(){
@@ -131,7 +132,7 @@ public class AwsLeadershipElectionService {
                 return result.getAutoScalingGroups().stream()
                         .filter(group -> group.getAutoScalingGroupName().startsWith(_autoScalingGroupName))
                         .findFirst().orElse(null);
-            } catch (Exception any) {
+            } catch (Throwable any) {
                 _log.error("exception retrieving autoscaling groups " + any, any);
             }
             return null;
@@ -147,7 +148,7 @@ public class AwsLeadershipElectionService {
                     instances.addAll(reservation.getInstances());
                 }
                 return instances;
-            } catch (Exception e){
+            } catch (Throwable e){
                 _log.error("Unable to retreive instances", e);
                 return Collections.EMPTY_LIST;
             }

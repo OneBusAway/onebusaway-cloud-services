@@ -58,12 +58,16 @@ public class AwsLeadershipElectionService {
 
     private void scheduleTaskIfUnscheduled(String autoScalingGroupName) {
         if (_scheduledExecutorService == null) {
-            _log.info("scheduling primary check...");
-            _scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-            _scheduledExecutorService.scheduleAtFixedRate(new LeadershipElectionTask(autoScalingGroupName),
-                    1, 1, TimeUnit.MINUTES);
-            // and run now, synchronously:
-            new LeadershipElectionTask(autoScalingGroupName).run();
+            try {
+                _log.info("scheduling primary check for group " + autoScalingGroupName);
+                _scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+                _scheduledExecutorService.scheduleAtFixedRate(new LeadershipElectionTask(autoScalingGroupName),
+                        1, 1, TimeUnit.MINUTES);
+                // and run now, synchronously:
+                new LeadershipElectionTask(autoScalingGroupName).run();
+            } catch (Exception any) {
+                _log.error("exception scheduling primary check: " + any, any);
+            }
         }
     }
 
@@ -83,6 +87,7 @@ public class AwsLeadershipElectionService {
         }
 
         public void run() {
+            _log.info("LeadershipElectionTask (primary) running....");
             AutoScalingGroup autoScalingGroup = getAutoScalingGroups();
 
             if(autoScalingGroup != null) {

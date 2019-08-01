@@ -58,6 +58,7 @@ public class AwsLeadershipElectionService {
 
     private void scheduleTaskIfUnscheduled(String autoScalingGroupName) {
         if (_scheduledExecutorService == null) {
+            _log.info("scheduling primary check...");
             _scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
             _scheduledExecutorService.scheduleAtFixedRate(new LeadershipElectionTask(autoScalingGroupName),
                     1, 1, TimeUnit.MINUTES);
@@ -85,29 +86,32 @@ public class AwsLeadershipElectionService {
             AutoScalingGroup autoScalingGroup = getAutoScalingGroups();
 
             if(autoScalingGroup != null) {
+                try {
+                    String oldestInstance = null;
+                    Date oldestInstanceLaunchTime = new Date();
 
-                String oldestInstance = null;
-                Date oldestInstanceLaunchTime = new Date();
+                    List<String> instanceIds = autoScalingGroup.getInstances().stream()
+                            .map(com.amazonaws.services.autoscaling.model.Instance::getInstanceId)
+                            .collect(Collectors.toList());
 
-                List<String> instanceIds = autoScalingGroup.getInstances().stream()
-                        .map(com.amazonaws.services.autoscaling.model.Instance::getInstanceId)
-                        .collect(Collectors.toList());
+                    List<Instance> instances = getInstances(instanceIds);
 
-                List<Instance> instances = getInstances(instanceIds);
-
-                for (Instance instance : instances) {
-                    if (instance.getLaunchTime().before(oldestInstanceLaunchTime)) {
-                        oldestInstanceLaunchTime = instance.getLaunchTime();
-                        oldestInstance = instance.getInstanceId();
+                    for (Instance instance : instances) {
+                        if (instance.getLaunchTime().before(oldestInstanceLaunchTime)) {
+                            oldestInstanceLaunchTime = instance.getLaunchTime();
+                            oldestInstance = instance.getInstanceId();
+                        }
                     }
-                }
 
-                if (oldestInstance != null && oldestInstance.equals(EC2MetadataUtils.getInstanceId())) {
-                    _log.warn("This is the primary instance.");
-                    _primary = true;
-                } else {
-                    _log.warn("This is not the primary instance. Oldest Instance Id is {}, this Instance Id is {}", oldestInstance, EC2MetadataUtils.getInstanceId());
-                    _primary = false;
+                    if (oldestInstance != null && oldestInstance.equals(EC2MetadataUtils.getInstanceId())) {
+                        _log.warn("This is the primary instance.");
+                        _primary = true;
+                    } else {
+                        _log.warn("This is not the primary instance. Oldest Instance Id is {}, this Instance Id is {}", oldestInstance, EC2MetadataUtils.getInstanceId());
+                        _primary = false;
+                    }
+                } catch (Exception any) {
+                    _log.error("exception with primary check:" + any, any);
                 }
             } else {
                 _log.warn("Not the primary instance, no autoScaling group found.");
@@ -116,11 +120,16 @@ public class AwsLeadershipElectionService {
         }
 
         private AutoScalingGroup getAutoScalingGroups(){
-            DescribeAutoScalingGroupsResult result = _autoScale.describeAutoScalingGroups(
-                    new DescribeAutoScalingGroupsRequest());
-            return result.getAutoScalingGroups().stream()
-                    .filter(group -> group.getAutoScalingGroupName().startsWith(_autoScalingGroupName))
-                    .findFirst().orElse(null);
+            try {
+                DescribeAutoScalingGroupsResult result = _autoScale.describeAutoScalingGroups(
+                        new DescribeAutoScalingGroupsRequest());
+                return result.getAutoScalingGroups().stream()
+                        .filter(group -> group.getAutoScalingGroupName().startsWith(_autoScalingGroupName))
+                        .findFirst().orElse(null);
+            } catch (Exception any) {
+                _log.error("exception retrieving autoscaling groups " + any, any);
+            }
+            return null;
         }
 
         private List<Instance> getInstances(List<String> instanceIds){

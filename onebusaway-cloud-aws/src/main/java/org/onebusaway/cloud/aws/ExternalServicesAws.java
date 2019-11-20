@@ -51,11 +51,15 @@ public class ExternalServicesAws implements ExternalServices {
 
     @Override
     public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer, String profile) {
+        return getFileAsStream(url, consumer, profile, CredentialContainer.DEFAULT_REGION);
+    }
+    @Override
+    public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer, String profile, String region) {
         CredentialContainer credentials;
         if (profile == null || "default".equals(profile)) {
             credentials = CredentialContainer.getDefault();
         } else {
-            credentials = new CredentialContainer(profile);
+            credentials = new CredentialContainer(profile, region);
         }
         try (InputStream inputStream = _s3.fetch(url, credentials)) {
             consumer.accept(inputStream);

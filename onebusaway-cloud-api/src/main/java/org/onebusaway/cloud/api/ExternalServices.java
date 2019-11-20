@@ -36,6 +36,17 @@ public interface ExternalServices {
     ExternalResult getFileAsStream(String url, InputStreamConsumer callback, String profile);
 
     /**
+     * Read a file from S3 to an InputStream
+     *
+     * @param url URL to read the file from
+     * @param callback Do something with the InputStream
+     * @param profile profile to use with S3 (default to "default")
+     * @param region us-east-1 for example
+     * @return result
+     */
+    ExternalResult getFileAsStream(String url, InputStreamConsumer callback, String profile, String region);
+
+    /**
      * Read a file from S3 to an InputStream, using the default S3 profile
      *
      * @param url URL to read the file from

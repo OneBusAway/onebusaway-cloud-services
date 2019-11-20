@@ -44,6 +44,12 @@ public class ExternalServicesNoopImpl implements ExternalServices {
     }
 
     @Override
+    public ExternalResult getFileAsStream(String url, InputStreamConsumer callback, String profile, String region) {
+        _log.info("getFileAsStream({" + url + "}, " + profile + ", " + region +  "}");
+        return new AlwaysTrueExternalResult();
+    }
+
+    @Override
     public ExternalResult getFileAsStream(String url, InputStreamConsumer callback) {
         _log.info("getFileAsStream({" + url + " }");
         return new AlwaysTrueExternalResult();

@@ -30,27 +30,39 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // adapted from mta-otp-deployer
 public class S3Services {
     private final Logger _log = LoggerFactory.getLogger(S3Services.class);
 
     // this expects config files present in ~/.aws
-    AmazonS3 s3;
+    Map<CredentialContainer, AmazonS3> regionMap = new HashMap<>();
+
 
     TransferManager tm;
 
     private AmazonS3 getS3Provider(CredentialContainer cc) {
+        if (cc == null) cc = CredentialContainer.getDefault();
         String profile = cc.getProfile();
-        if (profile == null || "default".equalsIgnoreCase(profile)) {
-            if (s3 == null) {
-                s3 = AmazonS3ClientBuilder.defaultClient();
-            }
-            return s3;
+        if (profile == null || profile.equals("")) {
+            _log.error("profile must be set:  profile=|" + profile + "|");
+            throw new IllegalStateException("profile must be set:  profile=|" + profile + "|");
         }
-        AmazonS3 provider = AmazonS3ClientBuilder.standard()
-                .withCredentials(new ProfileCredentialsProvider(profile)).build();
-        return provider;
+        String region = cc.getRegion();
+
+        synchronized (regionMap) {
+            if (regionMap.get(cc) == null) {
+                AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                        .withCredentials(new ProfileCredentialsProvider(profile))
+                        .withRegion(region)
+                        .build();
+                regionMap.put(cc, s3);
+            }
+        }
+        AmazonS3 result = regionMap.get(cc);
+        return result;
     }
 
     private TransferManager getTransferManager() {
@@ -62,14 +74,16 @@ public class S3Services {
 
     // input stream will need be closed
     public S3ObjectInputStream fetch(String url, CredentialContainer profile) {
-        _log.info("fetching {} to {} with profile {}", url, profile);
+        if (profile == null) throw new IllegalStateException("profile cannot be null!");
+        _log.info("fetching " + url + " with profile " + profile.getProfile());
         AmazonS3URI uri = new AmazonS3URI(url);
         S3Object o = getS3Provider(profile).getObject(uri.getBucket(), uri.getKey());
         return o.getObjectContent();
     }
 
     public String fetch(String url, String toFileName, String destinationPath, CredentialContainer profile) {
-        _log.info("fetching {} to {} with profile {}", url, destinationPath);
+        _log.info("fetching " + url + " to " + destinationPath
+                +" with profile " + profile.toString());
         S3ObjectInputStream s3is = fetch(url, profile);
         File mkdir = new File(destinationPath);
         if (!mkdir.exists() || !mkdir.isDirectory()) {

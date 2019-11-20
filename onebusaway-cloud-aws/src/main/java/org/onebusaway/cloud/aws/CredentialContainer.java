@@ -16,17 +16,30 @@
 package org.onebusaway.cloud.aws;
 
 public class CredentialContainer {
+    public static final String DEFAULT_REGION = "us-east-1";
     private String profile;
+    private String region;
 
     public CredentialContainer(String profile) {
         this.profile = profile;
+        this.region = DEFAULT_REGION;
+    }
+    public CredentialContainer(String profile, String region) {
+        this.profile = profile;
+        this.region = region;
     }
 
     public String getProfile() {
         return profile;
     }
 
+    public String getRegion() { return region; }
+
     public static CredentialContainer getDefault() {
         return new CredentialContainer("default");
+    }
+
+    public String toString() {
+        return "{region=" + region + ", profile=" + profile + "}";
     }
 }

@@ -38,6 +38,13 @@ public class ExternalServicesNoopImpl implements ExternalServices {
     }
 
     @Override
+    public ExternalResult publishMetric(String topic, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+        _log.info("publishMetric({" + topic + ":" + metricName + "}, {"
+                + dimensionName + "=" + dimensionValue +"}, {" + value + "})");
+        return new AlwaysTrueExternalResult();
+    }
+
+    @Override
     public ExternalResult getFileAsStream(String url, InputStreamConsumer callback, String profile) {
         _log.info("getFileAsStream({" + url + "}, " + profile + " }");
         return new AlwaysTrueExternalResult();

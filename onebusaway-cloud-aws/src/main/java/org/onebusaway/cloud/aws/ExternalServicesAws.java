@@ -40,19 +40,13 @@ public class ExternalServicesAws implements ExternalServices {
     }
 
     @Override
-    public ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensonValue, double value) {
-        return _cloudwatch.publishMetric(namespace, metricName, dimensionName, dimensonValue, value);
+    public ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value) {
+        return _cloudwatch.publishMetric(namespace, metricName, dimensionName, dimensionValue, value);
     }
 
     @Override
-    public ExternalResult publishMetric(String namespace, String metricName, String[] dimensionName, String[] dimensonValue, double value) {
-        if (dimensionName.length != dimensonValue.length)
-            throw new IllegalArgumentException("Array input must match in size!");
-        if (dimensionName == null || dimensionName.length == 0)
-            return _cloudwatch.publishMetric(namespace, metricName, null, null, value);
-
-        // todo!
-        return _cloudwatch.publishMetric(namespace, metricName, dimensionName[0], dimensonValue[0], value);
+    public ExternalResult publishMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+        return _cloudwatch.publishMetric(namespace, metricName, dimensionName, dimensionValue, value);
     }
         @Override
     public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer) {

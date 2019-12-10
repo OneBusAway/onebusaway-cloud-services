@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class CloudWatchServices {
@@ -34,24 +35,54 @@ public class CloudWatchServices {
 
     private AmazonCloudWatch _client;
     public ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value) {
-        Dimension dim = null;
+        ArrayList<Dimension> dims = null;
+
         if (dimensionName != null && dimensionValue != null) {
-            dim = new Dimension().withName(dimensionName).withValue(dimensionValue);
+            dims = new ArrayList<>(1);
+            Dimension dim = new Dimension().withName(dimensionName).withValue(dimensionValue);
+            dims.add(dim);
         }
+
+        return publishMetric(namespace, metricName, dims, value);
+    }
+
+    public ExternalResult publishMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+        ArrayList<Dimension> dims = null;
+
+        if (dimensionName != null && dimensionValue != null) {
+            if (dimensionName.length != dimensionValue.length) {
+                throw new IllegalStateException("Input array lengths must match: " + dimensionName + " vs " + dimensionValue);
+            }
+            dims = new ArrayList<>(1);
+            for (int i = 0; i<dimensionName.length; i++) {
+                if (dimensionName[i] != null && dimensionValue[i] != null) {
+                    Dimension dim = new Dimension().withName(dimensionName[i]).withValue(dimensionValue[i]);
+                    dims.add(dim);
+                }
+            }
+        } else if (dimensionName != dimensionValue) { // the should both be null for consistency
+            throw new IllegalStateException("Dimension mismatch: name=" + dimensionName + " vs value=" + dimensionValue);
+        }
+
+        return publishMetric(namespace, metricName, dims, value);
+    }
+
+    public ExternalResult publishMetric(String namespace, String metricName, List<Dimension> dims, double value) {
         MetricDatum datum = new MetricDatum().withMetricName(metricName).withValue((double)value).withUnit(StandardUnit.Count);
-        if (dim != null) {
+        if (dims != null) {
             if (datum.getDimensions() == null) {
                 datum.setDimensions(new ArrayList<Dimension>());
             }
-            datum.getDimensions().add(dim);
+            datum.getDimensions().addAll(dims);
         }
         PutMetricDataRequest pmdr = new PutMetricDataRequest().withNamespace(namespace).withMetricData(datum);
         _log.debug("cloudwatch(" + namespace + ":" + metricName
-                + " (" + dimensionName + "=" + dimensionValue + ") "
+                + " (" + dims + ") "
                 + " " + value + ")");
         PutMetricDataResult result = getClient().putMetricData(pmdr);
 
         return new AwsExternalResult(true, result.toString(), null);
+
     }
 
     private AmazonCloudWatch getClient() {

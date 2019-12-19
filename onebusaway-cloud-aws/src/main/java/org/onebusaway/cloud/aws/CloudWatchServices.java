@@ -46,7 +46,7 @@ public class CloudWatchServices {
         return publishMetric(namespace, metricName, dims, value);
     }
 
-    public ExternalResult publishMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+    public ExternalResult publishMultiDimensionalMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
         ArrayList<Dimension> dims = null;
 
         if (dimensionName != null && dimensionValue != null) {

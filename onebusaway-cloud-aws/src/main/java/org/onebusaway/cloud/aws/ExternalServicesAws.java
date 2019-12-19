@@ -45,8 +45,8 @@ public class ExternalServicesAws implements ExternalServices {
     }
 
     @Override
-    public ExternalResult publishMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
-        return _cloudwatch.publishMetric(namespace, metricName, dimensionName, dimensionValue, value);
+    public ExternalResult publishMultiDimensionalMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+        return _cloudwatch.publishMultiDimensionalMetric(namespace, metricName, dimensionName, dimensionValue, value);
     }
         @Override
     public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer) {

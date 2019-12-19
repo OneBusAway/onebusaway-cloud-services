@@ -25,7 +25,7 @@ public interface ExternalServices {
 
     ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value);
 
-    ExternalResult publishMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value);
+    ExternalResult publishMultiDimensionalMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value);
 
     /**
      * Read a file from S3 to an InputStream

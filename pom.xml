@@ -17,12 +17,12 @@
 
     <repositories>
         <repository>
-            <id>public.onebusaway.org</id>
-            <url>http://nexus.onebusaway.org/content/groups/public/</url>
+            <id>repo.camsys-apps.com</id>
+            <url>https://repo.camsys-apps.com/third-party/</url>
         </repository>
         <repository>
-            <id>releases.developer.onebusaway.org</id>
-            <url>http://developer.onebusaway.org/maven/repository/</url>
+            <id>releases-camsys-public-repo</id>
+            <url>https://repo.camsys-apps.com/releases/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -31,8 +31,8 @@
             </snapshots>
         </repository>
         <repository>
-            <id>snapshots.developer.onebusaway.org</id>
-            <url>http://developer.onebusaway.org/maven/snapshot-repository/</url>
+            <id>snapshots-camsys-public-repo</id>
+            <url>https://repo.camsys-apps.com/snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -43,11 +43,25 @@
     </repositories>
 
     <scm>
-      <connection>scm:git:git@github.com:onebusawway/onebusaway-cloud-services.git</connection>
-      <developerConnection>scm:git:git@github.com:onebusaway/onebusaway-cloud-services.git</developerConnection>
-      <url>scm:git:git@github.com:onebusaway/onebusaway-cloud-services</url>
-      <tag>HEAD</tag>
-  </scm>
+        <connection>scm:git:git@github.com:onebusawway/onebusaway-cloud-services.git</connection>
+        <developerConnection>scm:git:git@github.com:onebusaway/onebusaway-cloud-services.git</developerConnection>
+        <url>scm:git:git@github.com:onebusaway/onebusaway-cloud-services</url>
+        <tag>onebusaway-cloud-services-0.0.10</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>releases-camsys-public-repo</id>
+            <name>Camsys Public Release Repo</name>
+            <url>s3://repo.camsys-apps.com/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots-camsys-public-repo</id>
+            <name>Camsys Public Snapshot Repo</name>
+            <url>s3://repo.camsys-apps.com/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 
     <modules>
         <module>onebusaway-cloud-api</module>
@@ -55,5 +69,14 @@
         <module>onebusaway-cloud-aws</module>
     </modules>
 
+    <build>
+        <extensions>
+            <extension>
+                <groupId>com.github.platform-team</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>6.0.0</version>
+            </extension>
+        </extensions>
+    </build>
 
 </project>

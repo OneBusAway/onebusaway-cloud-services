@@ -21,6 +21,8 @@ import org.onebusaway.cloud.api.InputStreamConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class ExternalServicesNoopImpl implements ExternalServices {
     private final Logger _log = LoggerFactory.getLogger(ExternalServicesNoopImpl.class);
 
@@ -36,6 +38,52 @@ public class ExternalServicesNoopImpl implements ExternalServices {
                 + dimensionName + "=" + dimensionValue +"}, {" + value + "})");
         return new AlwaysTrueExternalResult();
     }
+
+    @Override
+    public ExternalResult publishMetrics(String topic, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("publishMetrics({");
+        sb.append("topic=").append(topic);
+
+        if(metricNames != null) {
+            sb.append(", metricNames=[");
+            for (String metricName : metricNames) {
+                sb.append("metricName").append(",");
+            }
+            sb.append("],");
+        }
+
+        if(values != null){
+            sb.append(", values=[");
+            for(Double value : values){
+                sb.append(value).append(",");
+            }
+            sb.append("]");
+        }
+
+        if(dimensionNames != null){
+            sb.append(", dimensionNames=[");
+            for(String dnames : dimensionNames){
+                sb.append(dnames).append(",");
+            }
+            sb.append("]");
+        }
+
+        if(dimensionValues != null){
+            sb.append(", dimensionValues=[");
+            for(String dvalues : dimensionValues){
+                sb.append(dvalues).append(",");
+            }
+            sb.append("]");
+        }
+
+        sb.append("})");
+
+        _log.info(sb.toString());
+
+        return new AlwaysTrueExternalResult();
+    }
+
 
     @Override
     public ExternalResult publishMultiDimensionalMetric(String topic, String metricName, String[] dimensionName, String[] dimensionValue, double value) {

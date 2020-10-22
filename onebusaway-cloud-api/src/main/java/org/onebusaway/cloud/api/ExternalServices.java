@@ -15,6 +15,8 @@
  */
 package org.onebusaway.cloud.api;
 
+import java.util.List;
+
 /**
  * Abstract common cloud functions into an interface with the hopes of keeping OneBusAway
  * cloud-agnostic.  Use the onebusaway-cloud-noop for trivial implementation of this so
@@ -24,6 +26,8 @@ public interface ExternalServices {
     ExternalResult publishMessage(String topic, String messageConents);
 
     ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value);
+
+    ExternalResult publishMetrics(String namespace, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values);
 
     ExternalResult publishMultiDimensionalMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value);
 

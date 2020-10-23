@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class ExternalServicesAws implements ExternalServices {
 
@@ -42,6 +43,11 @@ public class ExternalServicesAws implements ExternalServices {
     @Override
     public ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value) {
         return _cloudwatch.publishMetric(namespace, metricName, dimensionName, dimensionValue, value);
+    }
+
+    @Override
+    public ExternalResult publishMetrics(String namespace, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values) {
+        return _cloudwatch.publishMetrics(namespace, metricNames, dimensionNames, dimensionValues, values);
     }
 
     @Override

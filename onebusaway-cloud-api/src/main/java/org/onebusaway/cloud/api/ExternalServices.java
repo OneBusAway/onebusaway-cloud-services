@@ -26,10 +26,13 @@ public interface ExternalServices {
     ExternalResult publishMessage(String topic, String messageConents);
 
     ExternalResult publishMetric(String namespace, String metricName, String dimensionName, String dimensionValue, double value);
+    ExternalResult publishMetric(Credential credential, String namespace, String metricName, String dimensionName, String dimensionValue, double value);
 
     ExternalResult publishMetrics(String namespace, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values);
+    ExternalResult publishMetrics(Credential credential, String namespace, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values);
 
     ExternalResult publishMultiDimensionalMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value);
+    ExternalResult publishMultiDimensionalMetric(Credential credential, String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value);
 
     /**
      * Read a file from S3 to an InputStream

@@ -15,6 +15,7 @@
  */
 package org.onebusaway.cloud.aws;
 
+import org.onebusaway.cloud.api.Credential;
 import org.onebusaway.cloud.api.ExternalResult;
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.InputStreamConsumer;
@@ -46,15 +47,31 @@ public class ExternalServicesAws implements ExternalServices {
     }
 
     @Override
+    public ExternalResult publishMetric(Credential credential, String namespace, String metricName, String dimensionName, String dimensionValue, double value) {
+        return _cloudwatch.publishMetric(credential, namespace, metricName, dimensionName, dimensionValue, value);
+    }
+
+    @Override
+    public ExternalResult publishMetrics(Credential credential, String namespace, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values) {
+        return _cloudwatch.publishMetrics(credential, namespace, metricNames, dimensionNames, dimensionValues, values);    }
+    @Override
     public ExternalResult publishMetrics(String namespace, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values) {
         return _cloudwatch.publishMetrics(namespace, metricNames, dimensionNames, dimensionValues, values);
     }
 
     @Override
-    public ExternalResult publishMultiDimensionalMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
-        return _cloudwatch.publishMultiDimensionalMetric(namespace, metricName, dimensionName, dimensionValue, value);
+    public ExternalResult publishMultiDimensionalMetric(Credential credential, String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+        return _cloudwatch.publishMultiDimensionalMetric(credential, namespace, metricName, dimensionName, dimensionValue, value);
     }
-        @Override
+
+    @Override
+    public ExternalResult publishMultiDimensionalMetric(String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+        return publishMultiDimensionalMetric(new CredentialContainer().getDefaultCredential(), namespace, metricName,
+                dimensionName, dimensionValue, value);
+    }
+
+
+    @Override
     public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer) {
         return getFileAsStream(url, consumer, null);
     }
@@ -67,7 +84,7 @@ public class ExternalServicesAws implements ExternalServices {
     public ExternalResult getFileAsStream(String url, InputStreamConsumer consumer, String profile, String region) {
         CredentialContainer credentials;
         if (profile == null || "default".equals(profile)) {
-            credentials = CredentialContainer.getDefault();
+            credentials = new CredentialContainer();
         } else {
             credentials = new CredentialContainer(profile, region);
         }

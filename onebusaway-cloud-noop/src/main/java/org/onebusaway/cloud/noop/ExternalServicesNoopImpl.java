@@ -15,6 +15,7 @@
  */
 package org.onebusaway.cloud.noop;
 
+import org.onebusaway.cloud.api.Credential;
 import org.onebusaway.cloud.api.ExternalResult;
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.InputStreamConsumer;
@@ -35,6 +36,13 @@ public class ExternalServicesNoopImpl implements ExternalServices {
     @Override
     public ExternalResult publishMetric(String topic, String metricName, String dimensionName, String dimensionValue, double value) {
         _log.info("publishMetric({" + topic + ":" + metricName + "}, {"
+                + dimensionName + "=" + dimensionValue +"}, {" + value + "})");
+        return new AlwaysTrueExternalResult();
+    }
+
+    @Override
+    public ExternalResult publishMetric(Credential credential, String namespace, String metricName, String dimensionName, String dimensionValue, double value) {
+        _log.info("publishMetric({" + namespace + ":" + metricName + "}, {"
                 + dimensionName + "=" + dimensionValue +"}, {" + value + "})");
         return new AlwaysTrueExternalResult();
     }
@@ -84,12 +92,22 @@ public class ExternalServicesNoopImpl implements ExternalServices {
         return new AlwaysTrueExternalResult();
     }
 
+    @Override
+    public ExternalResult publishMetrics(Credential credential, String namespace, List<String> metricNames, List<String> dimensionNames, List<String> dimensionValues, List<Double> values) {
+        return publishMetrics(namespace, metricNames, dimensionNames, dimensionValues, values);
+    }
+
 
     @Override
     public ExternalResult publishMultiDimensionalMetric(String topic, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
         _log.info("publishMetric({" + topic + ":" + metricName + "}, {"
                 + dimensionName + "=" + dimensionValue +"}, {" + value + "})");
         return new AlwaysTrueExternalResult();
+    }
+
+    @Override
+    public ExternalResult publishMultiDimensionalMetric(Credential credential, String namespace, String metricName, String[] dimensionName, String[] dimensionValue, double value) {
+        return publishMultiDimensionalMetric(namespace, metricName, dimensionName, dimensionValue, value);
     }
 
     @Override

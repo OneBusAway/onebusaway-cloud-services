@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway-cloud-services</artifactId>
-    <version>0.0.13</version>
+    <version>0.0.13.1</version>
     <packaging>pom</packaging>
 
     <name>onebusaway-cloud-services</name>
@@ -14,6 +14,12 @@
         <artifactId>onebusaway</artifactId>
         <version>1.2.5</version>
     </parent>
+
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
 
     <repositories>
         <repository>
@@ -71,12 +77,22 @@
 
     <build>
         <extensions>
-            <extension>
-                <groupId>com.github.platform-team</groupId>
-                <artifactId>aws-maven</artifactId>
-                <version>6.0.0</version>
+           <extension>
+                <groupId>com.allogy.maven.wagon</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>1.2.0</version>
             </extension>
         </extensions>
+      <plugins>
+  	  <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<configuration>
+			<source>11</source>
+			<target>11</target>
+		</configuration>
+	  </plugin>
+      </plugins>
     </build>
 
 </project>

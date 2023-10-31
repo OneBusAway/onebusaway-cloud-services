@@ -65,6 +65,23 @@ public interface ExternalServices {
     ExternalResult getFileAsStream(String url, InputStreamConsumer callback);
 
     /**
+     * Copy a file on disk to S3, using the supplied S3 profile.
+     * @param url
+     * @param file
+     * @param profile
+     * @return
+     */
+    ExternalResult putFile(String url, String file, String profile, String region);
+
+    /**
+     * Copy a file on disk to S3 using the default S3 profile.
+     * @param url
+     * @param file
+     * @return
+     */
+    ExternalResult putFile(String url, String file);
+
+    /**
      * Allow services to determine if they are the primary instance for leadership-election purposes
      * (e.g. if multiple servers in a group are logging metrics.)
      *

@@ -108,9 +108,13 @@ public class S3Services {
     }
 
     public boolean put(String url, String fileName) {
+        return put(url, fileName, null);
+    }
+
+    public boolean put(String url, String fileName, CredentialContainer cc) {
         _log.info("uploading {} to {}", fileName, url);
         AmazonS3URI uri = new AmazonS3URI(url);
-        getS3Provider(null).putObject(uri.getBucket(), uri.getKey(), new File(fileName));
+        getS3Provider(cc).putObject(uri.getBucket(), uri.getKey(), new File(fileName));
         return true;
     }
 

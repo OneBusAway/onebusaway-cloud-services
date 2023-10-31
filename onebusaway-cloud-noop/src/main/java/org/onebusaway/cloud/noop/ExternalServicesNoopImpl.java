@@ -129,6 +129,18 @@ public class ExternalServicesNoopImpl implements ExternalServices {
     }
 
     @Override
+    public ExternalResult putFile(String url, String file, String profile, String region) {
+        _log.info("putFile({" + url + " } from " + file);
+        return new AlwaysTrueExternalResult();
+    }
+
+    @Override
+    public ExternalResult putFile(String url, String file) {
+        _log.info("putFile({" + url + " } from " + file);
+        return new AlwaysTrueExternalResult();
+    }
+
+    @Override
     public boolean isInstancePrimary() {
         return true;
     }

@@ -99,6 +99,22 @@ public class ExternalServicesAws implements ExternalServices {
     }
 
     @Override
+    public ExternalResult putFile(String url, String file) {
+        return putFile(url, file, CredentialContainer.DEFAULT_PROFILE, CredentialContainer.DEFAULT_REGION);
+    }
+
+    @Override
+    public ExternalResult putFile(String url, String file, String profile, String region) {
+        CredentialContainer credentials;
+        if (profile == null || "default".equals(profile)) {
+            credentials = new CredentialContainer();
+        } else {
+            credentials = new CredentialContainer(profile, region);
+        }
+        return new AwsExternalResult(_s3.put(url, file, credentials));
+    }
+
+    @Override
     public boolean isInstancePrimary() {
         return _election.isInstancePrimary();
     }

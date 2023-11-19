@@ -14,7 +14,7 @@
         <version>0.0.14-SNAPSHOT</version>
     </parent>
     <properties>
-        <aws.version>1.11.602</aws.version>
+        <aws.version>1.12.261</aws.version>
     </properties>
 
 
